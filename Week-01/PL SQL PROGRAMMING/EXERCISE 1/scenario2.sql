@@ -1,0 +1,12 @@
+ALTER TABLE Customers
+ADD IsVIP VARCHAR(5);
+
+UPDATE Customers
+SET IsVIP=
+CASE
+WHEN Balance>10000
+THEN 'TRUE'
+ELSE 'FALSE'
+END;
+
+SELECT * FROM Customers;
