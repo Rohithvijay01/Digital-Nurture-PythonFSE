@@ -1,16 +1,11 @@
-# Course Management System Architecture Decomposition
+# handson_10
 
-## Bounded Context Service Responsibilities
-* [cite_start]**Auth Service:** Owns user identity credentials, token generation, and registration rules.
-* [cite_start]**Course Service:** Owns department details, courses schema layout, and credit definitions.
-* [cite_start]**Student Service:** Owns student profiles and handles class enrollment logs.
+Flask microservices architecture.
 
-## Inter-Service Communication Trade-Off Analysis
+This folder contains the Week 02 Hands-On 10 project. It demonstrates a decomposed course management system using multiple Flask-based services for authentication, courses, and student management.
 
-### Synchronous (HTTP/REST)
-* [cite_start]**Pros:** Simple to implement[cite: 430]; transactional consistency is immediate.
-* [cite_start]**Cons:** Creates tight temporal coupling; an outage in a downstream service immediately triggers errors in the calling service[cite: 428].
-
-### Asynchronous (Message Queues - e.g., RabbitMQ, Kafka)
-* [cite_start]**Pros:** Decouples services completely[cite: 429]; high availability is maintained because messages are safely queued if a service is down.
-* [cite_start]**Cons:** High operational complexity [cite: 412][cite_start]; data consistency becomes eventual rather than instantaneous[cite: 429].
+## Contents
+- `course_service/` - service for course data and operations
+- `student_service/` - service for student records and enrollments
+- `gateway/` - API gateway or integration point for services
+- `requirements.txt` - Flask and service dependencies
