@@ -1,0 +1,20 @@
+DELIMITER $$
+
+CREATE FUNCTION CalculateAge(
+    dob DATE
+)
+RETURNS INT
+
+DETERMINISTIC
+
+BEGIN
+
+    RETURN TIMESTAMPDIFF(
+        YEAR,
+        dob,
+        CURDATE()
+    );
+
+END $$
+
+DELIMITER ;
