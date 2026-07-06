@@ -6,7 +6,7 @@ class UsbPowerSocket(ABC):
         pass
 
 class IndianCharger:
-    def plug_roundpin(self) -> str:
+    def plug_roundpin(self) -> str: 
         return "Charging with round pin charger"  
 
 class  Adapter(UsbPowerSocket):
@@ -20,3 +20,4 @@ my charger = IndianCharger()
 hotel_socket = Adapter(charger)
 
 print(hotel_socket.connect_flat())
+
