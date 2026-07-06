@@ -7,4 +7,4 @@ This folder contains the Week 02 Hands-On 7 FastAPI project. It provides univers
 ## Contents
 - `main.py` - application startup file
 - `schemas.py` - request and response models
-- `requirements.txt` - dependencies for FastAPI and supporting packages
+- `requirements.txt` - dependencies for FastAPI and supporting packages.
