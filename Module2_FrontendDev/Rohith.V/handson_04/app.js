@@ -1,4 +1,4 @@
-import { courses } from './data.js';
+import { courses, notifications } from './data.js?v=2';
 
 let cachedNotificationsData = [];
 let cachedCoursesData = [];
@@ -18,14 +18,14 @@ function runLiveDashboardClock() {
         
         const currentHour = snapshot.getHours();
         if (currentHour < 12) {
-            greetingDisplay.textContent = " Good Morning, John!";
+            greetingDisplay.textContent = " Good Morning, Rohith!";
         } else if (currentHour < 17) {
-            greetingDisplay.textContent = "Good Afternoon, John!";
+            greetingDisplay.textContent = "Good Afternoon, Rohith!";
         } else {
-            greetingDisplay.textContent = "Good Evening, John!";
+            greetingDisplay.textContent = "Good Evening, Rohith!";
         }
     };
-    updateTimeStrings();
+    updateTimeStrings()
     setInterval(updateTimeStrings, 1000);
 }
 
@@ -41,12 +41,13 @@ const renderNotificationsGrid = (targetData) => {
         return;
     }
     
-    targetData.forEach((post) => {
+    targetData.forEach((notification) => {
         const card = document.createElement('div');
         card.className = 'notification-card';
         card.innerHTML = `
-            <h4>📢 ${post.title} (User ID: ${post.userId})</h4>
-            <p style="margin: 0; font-size: 0.9rem; color: #475569;">${post.body}</p>
+            <h4>${notification.icon} ${notification.title}</h4>
+            <p style="margin: 0; font-size: 0.9rem; color: #475569;">${notification.message}</p>
+            <small style="display: block; margin-top: 0.45rem; color: #64748b;">${notification.time}</small>
         `;
         notificationsContainer.appendChild(card);
     });
@@ -78,18 +79,11 @@ const renderCoursesGrid = (filteredCourses = []) => {
 
 searchInput.addEventListener('input', (event) => {
     const currentQueryText = event.target.value.toLowerCase().trim();
-    const courseCards = document.querySelectorAll('.course-card');
+    const filteredNotifications = cachedNotificationsData.filter((notification) =>
+        `${notification.title} ${notification.message}`.toLowerCase().includes(currentQueryText)
+    );
 
-    courseCards.forEach((card) => {
-        const titleText = card.querySelector('h3').textContent.toLowerCase();
-        const codeText = card.querySelector('.course-code').textContent.toLowerCase();
-
-        if (titleText.includes(currentQueryText) || codeText.includes(currentQueryText)) {
-            card.style.display = 'flex';
-        } else {
-            card.style.display = 'none';
-        }
-    });
+    renderNotificationsGrid(filteredNotifications);
 });
 
 function fetchUser(id) {
@@ -161,34 +155,31 @@ async function apiFetch(url, searchParams = {}) {
     return response.data;
 }
 
-async function loadNotificationsPanel(targetUrl, filterParams = {}) {
-    try {
-        notificationsContainer.innerHTML = `
-            <div style="text-align: center; padding: 1rem;">
-                <div class="spinner"></div>
-                <p style="color: #666; font-style: italic;">Parsing background server bulletins...</p>
+async function loadNotificationsPanel() {
+    notificationsContainer.innerHTML = `
+        <div style="text-align: center; padding: 1rem;">
+            <div class="spinner"></div>
+            <p style="color: #666; font-style: italic;">Loading your academic updates...</p>
+        </div>
+    `;
+
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    cachedNotificationsData = notifications;
+    renderNotificationsGrid(cachedNotificationsData);
+}
+
+function showNotificationsConnectionError() {
+    notificationsContainer.innerHTML = `
+        <div class="error-alert">
+            <div>
+                <strong>⚠️ Connection Error:</strong>
+                <span>Unable to load notification updates right now. (Request failed with status code 404)</span>
             </div>
-        `;
+            <button class="retry-btn" id="notifications-retry-trigger">Retry Connection</button>
+        </div>
+    `;
 
-        const postsData = await apiFetch(targetUrl, filterParams);
-        cachedNotificationsData = postsData.slice(0, 3);
-        renderNotificationsGrid(cachedNotificationsData);
-
-    } catch (error) {
-        notificationsContainer.innerHTML = `
-            <div class="error-alert">
-                <div>
-                    <strong>⚠️ Connection Error:</strong> 
-                    <span>Unable to compile network notifications panel right now. (${error.message})</span>
-                </div>
-                <button class="retry-btn" id="notifications-retry-trigger">Retry Connection</button>
-            </div>
-        `;
-
-        document.querySelector('#notifications-retry-trigger').addEventListener('click', () => {
-            loadNotificationsPanel('https://jsonplaceholder.typicode.com/posts', { userId: 1 });
-        });
-    }
+    document.querySelector('#notifications-retry-trigger').addEventListener('click', loadNotificationsPanel);
 }
 
 runLiveDashboardClock();
@@ -196,4 +187,4 @@ fetchUser(1);
 fetchUserAsync(2);
 loadDashboardLifecycle();
 runConcurrentBatchFetches();
-loadNotificationsPanel('https://jsonplaceholder.typicode.com/nonexistent-broken-route');
+showNotificationsConnectionError();

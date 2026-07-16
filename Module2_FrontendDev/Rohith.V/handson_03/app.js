@@ -11,11 +11,9 @@ const sortButton = document.querySelector('#sort-credits');
 const renderPortalDashboard = (courseList) => {
     coursesGrid.innerHTML = '';
 
-    // BUILD & INJECT Iterate over the current active array state list
     courseList.forEach((course) => {
         const { name, code, credits, grade } = course;
 
-        // Create an isolated structural component element context node
         const cardElement = document.createElement('article');
         cardElement.className = 'course-card';
         
@@ -58,7 +56,6 @@ if (searchInput) {
             return course.name.toLowerCase().includes(searchTerm);
         });
 
-        // Trigger an interface repaint cycle using the refined selection match criteria
         renderPortalDashboard(filteredCourses);
     });
 }
@@ -80,14 +77,11 @@ if (coursesGrid) {
         // Hunt upwards along the event chain loop context to safely isolate matching card nodes
         const targetCardNode = event.target.closest('.course-card');
 
-        // Safety Guard: Abort early if the user clicked inside the grid spacing margins instead of a card
         if (!targetCardNode) return;
 
-        // De-serialize and parse our identifying key attributes from the layout markup layer
         const courseName = targetCardNode.getAttribute('data-name');
         const courseGrade = targetCardNode.getAttribute('data-grade');
 
-        // Alert prompt delivery sequence trigger
         alert(`Course Selected:\n📖 Name: ${courseName}\n🎯 Grade Achieved: ${courseGrade}`);
     });
 }
