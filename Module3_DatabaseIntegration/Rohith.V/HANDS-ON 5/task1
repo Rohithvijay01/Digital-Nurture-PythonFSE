@@ -1,7 +1,7 @@
 
 use("college_nosql");
 
-// Collection will be created automatically on first insert
+// Collection will be created automatically on first insertt
 db.createCollection("feedback");
 
 
